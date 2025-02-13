@@ -31,7 +31,7 @@ struct BlockHeader {
 class CustomAllocator
 {
     public:
-        //10mb mem poop
+        //10mb mem pool
         const size_t MEMORY_SIZE = 1024 * 1024 * 10;
         //4kb chunk size
         const size_t CHUNCK_SIZE = 4096;
@@ -44,12 +44,18 @@ class CustomAllocator
 
 
         CustomAllocator(){
+            if (!memoryPool)
+            {
+                std::cout << "Error Allocating Memory";
+                exit(1);
+            }
+
             freeList = (BlockHeader*)memoryPool;
             freeList->isFree = true;
-            freeList->size = sizeof(MEMORY_SIZE);
+            freeList->size = MEMORY_SIZE - sizeof(BlockHeader);
             freeList->nextHeader = nullptr;
     
-        }
+        };
 
         void* myMalloc(size_t size){
 
@@ -65,6 +71,6 @@ class CustomAllocator
 int main()
 {   
     CustomAllocator MA;
-    std::cout << sizeof(MA.freeList->size);
+    std::cout << MA.freeList->size;
 
 }
