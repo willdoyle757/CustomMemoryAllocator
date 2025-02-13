@@ -42,7 +42,6 @@ class CustomAllocator
 
         BlockHeader* freeList;
 
-
         CustomAllocator(){
             if (!memoryPool)
             {
@@ -51,14 +50,60 @@ class CustomAllocator
             }
 
             freeList = (BlockHeader*)memoryPool;
-            freeList->isFree = true;
-            freeList->size = MEMORY_SIZE - sizeof(BlockHeader);
-            freeList->nextHeader = nullptr;
-    
-        };
 
+            InitHeader(freeList, MEMORY_SIZE - sizeof(BlockHeader));
+        };
+    
+        void InitHeader(BlockHeader* header, size_t size){
+            header->isFree = true;
+            header->size = size;
+            header->nextHeader = nullptr;
+        }
+
+        /*
+        
+        [Header | data  | Header                                    ]
+
+        h1->h2->nullptr
+        nf->f
+        
+        */
+
+        //When myMalloc called recieve the pointer to the address right after the header
+        //and then add new header at the end of the given memory and attach to the free list
         void* myMalloc(size_t size){
 
+            void* memPtr;
+
+            //search for next available spot in memory using freeList Linked List
+            BlockHeader* currHead = freeList;
+            BlockHeader* newHead;
+
+            //find a way to break if it finds no available memory
+            while (!(currHead->nextHeader == nullptr || currHead->isFree))
+            {
+                currHead = currHead->nextHeader;
+            }
+            std::cout << "Memorty Available!" << std::endl;
+
+            //pointer after block header which is where the actual memory starts
+            memPtr = (void*)(currHead + 1);
+
+            //sets current mem block to occupied and currHead size to memory size
+            currHead->isFree = false;
+            currHead->size = size;
+
+            //new header ptr after allocated memory by moving the pointer, size amount of bytes
+            //from the memPtr to where the next header would be
+            //(char*) == 1 byte
+            newHead = (BlockHeader*)((char*)memPtr + size);
+            currHead->nextHeader = newHead;
+
+           
+            //need to find a way to get size of current header
+            InitHeader(newHead, currHead->size - size - sizeof(BlockHeader));
+
+            return memPtr;
         }
 
         void myFree(void *ptr){
@@ -71,6 +116,17 @@ class CustomAllocator
 int main()
 {   
     CustomAllocator MA;
-    std::cout << MA.freeList->size;
+
+    int* intPtr1 = (int*)MA.myMalloc(sizeof(int));
+
+    std::cout << "Address of header: " << MA.freeList << std::endl;
+    std::cout << "Header Struct size: " << sizeof(BlockHeader) << std::endl;
+    std::cout << "Address of the ptr1 int: " << intPtr1 << std::endl;
+
+    int* intPtr2 = (int*)MA.myMalloc(sizeof(int));
+    std::cout << "Address of ptr2: " << intPtr2 << std::endl;
+
+    //24+4+24
+    
 
 }
