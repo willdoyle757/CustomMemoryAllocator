@@ -84,7 +84,7 @@ class CustomAllocator
             {
                 currHead = currHead->nextHeader;
             }
-            std::cout << "Memorty Available!" << std::endl;
+            std::cout << "Memory Available!" << std::endl;
 
             //pointer after block header which is where the actual memory starts
             memPtr = (void*)(currHead + 1);
@@ -106,7 +106,17 @@ class CustomAllocator
             return memPtr;
         }
 
+        
         void myFree(void *ptr){
+
+            //Set block header to free
+            //Check if the block above and below are free then merge with those blocks
+            
+
+
+        }
+
+        void printHeaders(){
 
         }
 
@@ -124,7 +134,13 @@ int main()
     std::cout << "Address of the ptr1 int: " << intPtr1 << std::endl;
 
     int* intPtr2 = (int*)MA.myMalloc(sizeof(int));
+    *intPtr2 = 24;
     std::cout << "Address of ptr2: " << intPtr2 << std::endl;
+    std::cout << "value in ptr 2: " << *intPtr2 << std::endl;
+
+
+
+    std::cout << "ptr2 after free " << *intPtr2 << std::endl;
 
     //24+4+24
     
