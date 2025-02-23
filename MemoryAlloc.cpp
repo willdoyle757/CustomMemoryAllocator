@@ -62,10 +62,10 @@ class CustomAllocator
 
         /*
         
-        [Header | data  | Header                                    ]
+        [Header | data  | Header | data                               ]
 
         h1->h2->nullptr
-        nf->f
+       
         
         */
 
@@ -86,10 +86,14 @@ class CustomAllocator
             }
             std::cout << "Memory Available!" << std::endl;
 
-            //pointer after block header which is where the actual memory starts
+            //pointer to memory after block header which is where the actual memory starts 
+            //this is whats returned
             memPtr = (void*)(currHead + 1);
 
-            //sets current mem block to occupied and currHead size to memory size
+            //stash old size value of the current head
+            int oldSize = currHead->size;
+
+            //sets current mem block to occupied and currHead size to allocated memory size
             currHead->isFree = false;
             currHead->size = size;
 
@@ -99,11 +103,29 @@ class CustomAllocator
             newHead = (BlockHeader*)((char*)memPtr + size);
             currHead->nextHeader = newHead;
 
-           
             //need to find a way to get size of current header
-            InitHeader(newHead, currHead->size - size - sizeof(BlockHeader));
+            InitHeader(newHead, oldSize - currHead->size - sizeof(BlockHeader));
 
             return memPtr;
+        }
+
+        //function for visualizing the free list
+        //will only visualize the first 10 headers for testing and debuging
+        void freeListVisual(){
+            BlockHeader* currHead = freeList;
+            int headerCount = 1;
+            char free = true;
+            while (currHead->nextHeader != nullptr)
+            {
+                free = (currHead->isFree) ? 'y' : 'n';
+                std::cout << "Header: " << headerCount << ", size: " << currHead->size << " is free: " << free << "\n";
+                std::cout << "---------------------------------------------------------------------" << "\n";
+                currHead = currHead->nextHeader;
+                headerCount++;
+            }
+            free = (currHead->isFree) ? 'y' : 'n';
+            std::cout << "Header: " << headerCount << ", size: " << currHead->size << " is free: " << free << "\n";
+
         }
 
         
@@ -111,6 +133,8 @@ class CustomAllocator
 
             //Set block header to free
             //Check if the block above and below are free then merge with those blocks
+
+
             
 
 
@@ -128,9 +152,10 @@ int main()
     CustomAllocator MA;
 
     int* intPtr1 = (int*)MA.myMalloc(sizeof(int));
-
+    
     std::cout << "Address of header: " << MA.freeList << std::endl;
     std::cout << "Header Struct size: " << sizeof(BlockHeader) << std::endl;
+    //header 24 bytes
     std::cout << "Address of the ptr1 int: " << intPtr1 << std::endl;
 
     int* intPtr2 = (int*)MA.myMalloc(sizeof(int));
@@ -138,9 +163,10 @@ int main()
     std::cout << "Address of ptr2: " << intPtr2 << std::endl;
     std::cout << "value in ptr 2: " << *intPtr2 << std::endl;
 
-
-
     std::cout << "ptr2 after free " << *intPtr2 << std::endl;
+
+
+    MA.freeListVisual();
 
     //24+4+24
     
