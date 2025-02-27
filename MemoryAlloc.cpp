@@ -65,7 +65,6 @@ class CustomAllocator
         [Header | data  | Header | data                               ]
 
         h1->h2->nullptr
-       
         
         */
 
@@ -114,7 +113,7 @@ class CustomAllocator
         void freeListVisual(){
             BlockHeader* currHead = freeList;
             int headerCount = 1;
-            char free = true;
+            char free;
             while (currHead->nextHeader != nullptr)
             {
                 free = (currHead->isFree) ? 'y' : 'n';
@@ -128,22 +127,49 @@ class CustomAllocator
 
         }
 
-        
+        //Set block header to free
+        //Check if the block above and below are free then coalesce with those blocks
         void myFree(void *ptr){
+            //block header being freed
+            BlockHeader* header = ((BlockHeader*)ptr - 1);
 
-            //Set block header to free
-            //Check if the block above and below are free then merge with those blocks
+            //checking to make sure pointer arithmetic was correct
+            //std::cout << "ptr header: "<< header << std::endl;
+
+            //set current header to true
+            header->isFree = true;
+
+            //Here the free function check if the header above and below are free and then merges them
+
+            //merge header with free header below
+            if (header->nextHeader->isFree){
+                //adjust size of merge
+                header->size += (header->nextHeader->size + sizeof(BlockHeader));
+                //sets next header
+                header->nextHeader = header->nextHeader->nextHeader;
+            }
 
 
+            //merger header with free header above
+            //go through the freelist to find the prev header 
+            //currHeader is the previous block header to of the header being freed
+            BlockHeader* currHeader = freeList;
+            while(currHeader->nextHeader != header){
+
+                currHeader = currHeader->nextHeader;
+            }
+
+            //check prev header availablilty
+            if (currHeader->isFree){
+
+                currHeader->nextHeader = header->nextHeader;
+                currHeader->size += (header->size + sizeof(BlockHeader));
+                
+            }
+
+            //merge headers that are adacent and free
             
-
-
         }
-
-        void printHeaders(){
-
-        }
-
 };
 
 
@@ -164,7 +190,15 @@ int main()
     std::cout << "value in ptr 2: " << *intPtr2 << std::endl;
 
     std::cout << "ptr2 after free " << *intPtr2 << std::endl;
+    int* intPtr3 = (int*)MA.myMalloc(sizeof(int));
 
+    MA.freeListVisual();
+
+    MA.myFree(intPtr2);
+
+    MA.freeListVisual();
+
+    MA.myFree(intPtr3);
 
     MA.freeListVisual();
 
