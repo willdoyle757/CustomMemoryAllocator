@@ -62,7 +62,7 @@ class CustomAllocator
 
         /*
         
-        [Header | data  | Header | data                               ]
+        [Header | data  | Header | data            ]
 
         h1->h2->nullptr
         
@@ -79,7 +79,7 @@ class CustomAllocator
             BlockHeader* newHead;
 
             //find a way to break if it finds no available memory
-            while (!(currHead->nextHeader == nullptr || currHead->isFree))
+            while (!(currHead->nextHeader == nullptr || currHead->isFree) || currHead->size < size)
             {
                 currHead = currHead->nextHeader;
             }
@@ -198,7 +198,7 @@ int main()
 
     MA.freeListVisual();
 
-    MA.myFree(intPtr3);
+    double *doubPtr = (double*)MA.myMalloc(sizeof(double));
 
     MA.freeListVisual();
 
