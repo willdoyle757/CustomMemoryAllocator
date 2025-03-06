@@ -129,6 +129,30 @@ main/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
 .PHONY : main/fast
 
+Benchmarks.obj: Benchmarks.cpp.obj
+.PHONY : Benchmarks.obj
+
+# target to build an object file
+Benchmarks.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Benchmarks.cpp.obj
+.PHONY : Benchmarks.cpp.obj
+
+Benchmarks.i: Benchmarks.cpp.i
+.PHONY : Benchmarks.i
+
+# target to preprocess a source file
+Benchmarks.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Benchmarks.cpp.i
+.PHONY : Benchmarks.cpp.i
+
+Benchmarks.s: Benchmarks.cpp.s
+.PHONY : Benchmarks.s
+
+# target to generate assembly for a file
+Benchmarks.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Benchmarks.cpp.s
+.PHONY : Benchmarks.cpp.s
+
 MemoryAlloc.obj: MemoryAlloc.cpp.obj
 .PHONY : MemoryAlloc.obj
 
@@ -186,6 +210,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... main"
+	@echo "... Benchmarks.obj"
+	@echo "... Benchmarks.i"
+	@echo "... Benchmarks.s"
 	@echo "... MemoryAlloc.obj"
 	@echo "... MemoryAlloc.i"
 	@echo "... MemoryAlloc.s"
