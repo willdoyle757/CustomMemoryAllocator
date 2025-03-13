@@ -24,7 +24,7 @@ cd build
 Using cmake create a new build with 
 
 ```sh
-cmake -G "Unix Makefiles .."
+cmake -G "Unix Makefiles" ..
 ```
 Then compile by calling make
 ```sh
