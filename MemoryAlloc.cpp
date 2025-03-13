@@ -39,7 +39,7 @@ CustomAllocator::CustomAllocator(){
         exit(1);
     }
 
-    //sets the free list to the start of the memory pool
+    //Initiallizes the free list by setting the pointer to the start of the memory pool
     freeList = (BlockHeader*)memoryPool;
 
     //initializes the first block header in freelist

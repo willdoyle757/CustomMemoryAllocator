@@ -2,7 +2,7 @@
 #include "MemoryAlloc.h"
 #include "Benchmarks.h"
 
-void demo(){
+void debugDemo(){
     CustomAllocator MA;
 
     int* intPtr1 = (int*)MA.FAMalloc(sizeof(int));
@@ -31,12 +31,12 @@ void demo(){
 
     MA.freeListVisual();
     
-    
     std::cout << "Testing";
 }
 
 int main()
 {
-    //demo();   
-    AllocationTimeBenchmark();
+    //debugDemo();   
+    StandardLibraryAllocTimeBenchmark<char>(100);
+    CustomAllocationTimeBenchmark<char>(100);
 }
